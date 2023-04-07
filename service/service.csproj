@@ -19,4 +19,11 @@
         <Link>.dockerignore</Link>
       </Content>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Consumers" />
+      <Folder Include="Producers" />
+      <Folder Include="Repositories" />
+      <Folder Include="Services" />
+    </ItemGroup>
 </Project>

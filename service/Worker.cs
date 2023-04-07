@@ -1,37 +1,41 @@
 using Confluent.Kafka;
+using INF36307.TP3.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace INF36307.TP3;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
+    private readonly KafkaOptions _options;
 
-    public Worker(ILogger<Worker> logger)
+    public Worker(ILogger<Worker> logger, IOptions<KafkaOptions> options)
     {
         _logger = logger;
+        _options = options.Value;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         ConsumerConfig config = new ConsumerConfig
         {
-            GroupId = "users-consumer-group",
-            BootstrapServers = "kafka-0.kafka.default.svc.cluster.local:9092,kafka-1.kafka.default.svc.cluster.local:9092,kafka-2.kafka.default.svc.cluster.local:9092",
-            AutoOffsetReset = AutoOffsetReset.Earliest
+            GroupId = _options.GroupId,
+            BootstrapServers = _options.BootstrapServers,
+            AutoOffsetReset = _options.AutoOffsetReset
         };
 
         ProducerConfig producerConfig = new ProducerConfig
         {
-            BootstrapServers = "kafka-0.kafka.default.svc.cluster.local:9092,kafka-1.kafka.default.svc.cluster.local:9092,kafka-2.kafka.default.svc.cluster.local:9092",
-            BatchSize = 10000000,
-            LingerMs = 200,
-            CompressionType = CompressionType.Lz4,
-            Acks = Acks.All
+            BootstrapServers = _options.BootstrapServers,
+            BatchSize = _options.BatchSize,
+            LingerMs = _options.LingerMs,
+            CompressionType = _options.CompressionType,
+            Acks = _options.Acks
         };
 
         using var consumerBuilder = new ConsumerBuilder<Ignore, string>(config).Build();
         using var producer = new ProducerBuilder<Null, string>(config).Build();
-        consumerBuilder.Subscribe("users");
+        consumerBuilder.Subscribe(_options.ConsumerTopic);
 
         try
         {
@@ -45,7 +49,7 @@ public class Worker : BackgroundService
                     Console.WriteLine($"Consumed message '{result.Message.Value}' at: '{result.TopicPartitionOffset}'.");
                     
                     producer.Produce(
-                        "notification", 
+                        _options.ProducerTopic, 
                         new Message<Null, string> { Value=result.Message.Value },
                         (deliveryReport) =>
                         {
