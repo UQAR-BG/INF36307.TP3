@@ -3,10 +3,12 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["service/service.csproj", "service/"]
-RUN dotnet restore "service/service.csproj"
+COPY ["service.csproj", "user-worker-service/"]
+RUN dotnet restore "user-worker-service/service.csproj"
+
+WORKDIR "/src/user-worker-service"
 COPY . .
-WORKDIR "/src/service"
+
 RUN dotnet build "service.csproj" -c Release -o /app/build
 
 FROM build AS publish
