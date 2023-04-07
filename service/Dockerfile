@@ -3,16 +3,16 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["INF36307.TP3/INF36307.TP3.csproj", "INF36307.TP3/"]
-RUN dotnet restore "INF36307.TP3/INF36307.TP3.csproj"
+COPY ["service/service.csproj", "service/"]
+RUN dotnet restore "service/service.csproj"
 COPY . .
-WORKDIR "/src/INF36307.TP3"
-RUN dotnet build "INF36307.TP3.csproj" -c Release -o /app/build
+WORKDIR "/src/service"
+RUN dotnet build "service.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "INF36307.TP3.csproj" -c Release -o /app/publish
+RUN dotnet publish "service.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "INF36307.TP3.dll"]
+ENTRYPOINT ["dotnet", "service.dll"]
