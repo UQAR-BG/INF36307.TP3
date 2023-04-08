@@ -2,8 +2,11 @@ using Newtonsoft.Json;
 
 namespace INF36307.TP3.Models;
 
-public class Notification
+public class Etudiant
 {
+    [JsonIgnore]
+    public int Id { get; set; }
+    
     [JsonProperty("nom", Required = Required.Always)]
     public string Nom { get; set; } = string.Empty;
     

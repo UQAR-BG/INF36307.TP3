@@ -1,5 +1,6 @@
 using INF36307.TP3.Models;
 using INF36307.TP3.Producers;
+using INF36307.TP3.Repositories.Interfaces;
 using INF36307.TP3.Utils;
 
 namespace INF36307.TP3.Services;
@@ -7,11 +8,13 @@ namespace INF36307.TP3.Services;
 public class UserService : IUserService
 {
     private readonly IProducer _producer;
+    private readonly IEtudiantRepository _repository;
     private readonly JsonUtils<User> _jsonUtils;
 
-    public UserService(IProducer producer)
+    public UserService(IProducer producer, IEtudiantRepository repository)
     {
         _producer = producer;
+        _repository = repository;
         _jsonUtils = new JsonUtils<User>();
     }
     
@@ -20,13 +23,9 @@ public class UserService : IUserService
         var user = _jsonUtils.Deserialize(name);
         if (user != null)
         {
-            Notification notif = new Notification
-            {
-                Nom = user.Nom,
-                Email = "test@gmail.com"
-            };
+            Etudiant etudiant = _repository.First(user.Nom);
             
-            string serializedUser = JsonUtils<Notification>.Serialize(notif);
+            string serializedUser = JsonUtils<Etudiant>.Serialize(etudiant);
             _producer.Produce(serializedUser);
         }
         else
