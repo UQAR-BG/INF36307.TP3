@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "INF36307.TP3": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
