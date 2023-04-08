@@ -1,6 +1,6 @@
 using INF36307.TP3.Models;
 using INF36307.TP3.Repositories.Interfaces;
-using MySqlConnector;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace INF36307.TP3.Repositories;
 
@@ -9,10 +9,13 @@ public class EtudiantRepositoryProxy : IEtudiantRepository
     private readonly IEtudiantRepository _repository;
     private readonly IEtudiantRepository _cache;
 
-    public EtudiantRepositoryProxy(MySqlConnection mySqlConnection)
+    public EtudiantRepositoryProxy(IConnectionFactory connectionFactory, IMemoryCache cache)
     {
-        _repository = new EtudiantRepository(mySqlConnection);
-        _cache = new EtudiantCache();
+        _repository = new EtudiantRepository(connectionFactory);
+        _cache = new EtudiantCache(cache);
+
+        IEnumerable<Etudiant> etudiants = _repository.All();
+        _cache.AddRange(etudiants);
     }
     
     public Etudiant First(string username)
@@ -33,6 +36,11 @@ public class EtudiantRepositoryProxy : IEtudiantRepository
     }
 
     public Etudiant Add(Etudiant etudiant)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddRange(IEnumerable<Etudiant> etudiants)
     {
         throw new NotImplementedException();
     }

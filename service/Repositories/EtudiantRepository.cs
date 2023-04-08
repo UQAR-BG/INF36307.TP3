@@ -6,18 +6,16 @@ namespace INF36307.TP3.Repositories;
 
 public class EtudiantRepository: IEtudiantRepository
 {
-    private readonly MySqlConnection _connection;
+    private readonly IConnectionFactory _connectionFactory;
 
-    public EtudiantRepository(MySqlConnection connection)
+    public EtudiantRepository(IConnectionFactory connectionFactory)
     {
-        _connection = connection;
+        _connectionFactory = connectionFactory;
     }
     
     public Etudiant First(string username)
     {
-        _connection.Open();
-
-        using var command = new MySqlCommand($"SELECT * FROM etudiants WHERE nom=?nom;", _connection);
+        using var command = new MySqlCommand($"SELECT * FROM etudiants WHERE nom=?nom;", _connectionFactory.GetConnection());
         command.Parameters.Add(new MySqlParameter("nom", username));
         using var reader = command.ExecuteReader();
 
@@ -32,16 +30,34 @@ public class EtudiantRepository: IEtudiantRepository
             };
         }
         
-        _connection.Close();
         return etudiant;
     }
 
     public IEnumerable<Etudiant> All()
     {
-        throw new NotImplementedException();
+        using var command = new MySqlCommand($"SELECT * FROM etudiants;", _connectionFactory.GetConnection());
+        using var reader = command.ExecuteReader();
+
+        List<Etudiant> etudiants = new List<Etudiant>();
+        while (reader.Read())
+        {
+            etudiants.Add(new Etudiant
+            {
+                Id = reader.GetInt32(0),
+                Nom = reader.GetString(1),
+                Email = reader.GetString(2)
+            });
+        }
+        
+        return etudiants;
     }
 
     public Etudiant Add(Etudiant etudiant)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AddRange(IEnumerable<Etudiant> etudiants)
     {
         throw new NotImplementedException();
     }

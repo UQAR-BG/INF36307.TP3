@@ -8,6 +8,6 @@ fi
 kubectl apply -f ./server/
 
 echo "Waiting for cluster to start ..."
-sleep 3s
+sleep 5s
 
 kubectl apply -f ./service/

@@ -1,3 +1,4 @@
+using System.Collections;
 using INF36307.TP3;
 using INF36307.TP3.Configuration;
 using INF36307.TP3.Consumers;
@@ -10,10 +11,21 @@ using MySqlConnector;
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
-        IConfiguration configuration = hostContext.Configuration;
+        IHostEnvironment env = hostContext.HostingEnvironment;
+        IConfiguration config = hostContext.Configuration;
+        IConfigurationBuilder builder = new ConfigurationBuilder()
+            .SetBasePath(env.ContentRootPath)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
+        builder.AddEnvironmentVariables("DOTNET_");
+
+        services.AddMemoryCache();
+        
         services.AddTransient<MySqlConnection>(_ =>
-            new MySqlConnection(configuration.GetConnectionString("Default")));
-        services.Configure<KafkaOptions>(configuration.GetSection("Kafka"));
+            new MySqlConnection(Environment.GetEnvironmentVariable("DOTNET_ConnectionStrings__DefaultConnection")));
+        services.Configure<KafkaOptions>(config.GetSection("Kafka"));
+        services.AddSingleton<IConnectionFactory, MySqlConnectionFactory>();
         services.AddScoped<IProducer, KafkaProducer>();
         services.AddScoped<IEtudiantRepository, EtudiantRepositoryProxy>();
         services.AddScoped<IUserService, UserService>();
@@ -23,3 +35,5 @@ IHost host = Host.CreateDefaultBuilder(args)
     .Build();
 
 await host.RunAsync();
+
+// configuration.GetConnectionString("Default")

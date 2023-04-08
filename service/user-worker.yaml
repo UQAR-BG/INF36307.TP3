@@ -16,6 +16,8 @@ spec:
       - name: user-worker
         image: docker.io/library/user-worker-service:latest
         imagePullPolicy: IfNotPresent
-        # env:
-        # - name: ZK_HOSTS
-        #   value: "zookeeper-service:2181"
+        env:
+        - name: "DOTNET_ENVIRONMENT"
+          value: "Production"
+        - name: "DOTNET_ConnectionStrings__DefaultConnection"
+          value: "Server=mysql;User ID=root;Password=pass;Database=uqar"
