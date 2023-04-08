@@ -8,13 +8,13 @@ public class KafkaProducer: IProducer
 {
     private readonly ILogger<Worker> _logger;
     private readonly KafkaOptions _options;
-    private readonly ProducerConfig _config;
+    private readonly IProducer<Null, string> _producer;
     
     public KafkaProducer(ILogger<Worker> logger, IOptions<KafkaOptions> options)
     {
         _logger = logger;
         _options = options.Value;
-        _config = new ProducerConfig
+        ProducerConfig config = new ProducerConfig
         {
             BootstrapServers = _options.BootstrapServers,
             BatchSize = _options.BatchSize,
@@ -22,13 +22,13 @@ public class KafkaProducer: IProducer
             CompressionType = _options.CompressionType,
             Acks = _options.Acks
         };
+        
+        _producer = new ProducerBuilder<Null, string>(config).Build();
     }
     
     public void Produce(string message)
     {
-        using var producer = new ProducerBuilder<Null, string>(_config).Build();
-        
-        producer.Produce(
+        _producer.Produce(
             _options.ProducerTopic, 
             new Message<Null, string> { Value=message },
             (deliveryReport) =>
