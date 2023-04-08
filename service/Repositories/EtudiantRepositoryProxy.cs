@@ -21,12 +21,18 @@ public class EtudiantRepositoryProxy : IEtudiantRepository
         if (etudiant == null)
         {
             etudiant = _repository.First(username);
+            _cache.Add(etudiant);
         }
 
         return etudiant;
     }
 
     public IEnumerable<Etudiant> All()
+    {
+        throw new NotImplementedException();
+    }
+
+    public Etudiant Add(Etudiant etudiant)
     {
         throw new NotImplementedException();
     }

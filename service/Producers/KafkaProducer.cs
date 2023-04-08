@@ -16,11 +16,11 @@ public class KafkaProducer: IProducer
         _options = options.Value;
         ProducerConfig config = new ProducerConfig
         {
-            BootstrapServers = _options.BootstrapServers,
-            BatchSize = _options.BatchSize,
-            LingerMs = _options.LingerMs,
-            CompressionType = _options.CompressionType,
-            Acks = _options.Acks
+            BootstrapServers = _options.BootstrapServers
+            // BatchSize = _options.BatchSize,
+            // LingerMs = _options.LingerMs,
+            // CompressionType = _options.CompressionType,
+            // Acks = _options.Acks
         };
         
         _producer = new ProducerBuilder<Null, string>(config).Build();

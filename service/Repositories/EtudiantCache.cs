@@ -14,4 +14,9 @@ public class EtudiantCache : IEtudiantRepository
     {
         throw new NotImplementedException();
     }
+
+    public Etudiant Add(Etudiant etudiant)
+    {
+        return etudiant;
+    }
 }

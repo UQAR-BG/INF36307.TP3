@@ -40,4 +40,9 @@ public class EtudiantRepository: IEtudiantRepository
     {
         throw new NotImplementedException();
     }
+
+    public Etudiant Add(Etudiant etudiant)
+    {
+        throw new NotImplementedException();
+    }
 }
