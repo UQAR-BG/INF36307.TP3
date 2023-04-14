@@ -1,15 +1,15 @@
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace INF36307.TP3.Models;
 
 public class Etudiant
 {
-    [JsonIgnore]
+    [IgnoreDataMember]
     public int Id { get; set; }
     
-    [JsonProperty("nom", Required = Required.Always)]
+    [DataMember(Name = "nom")]
     public string Nom { get; set; } = string.Empty;
     
-    [JsonProperty("email", Required = Required.AllowNull)]
+    [DataMember(Name = "email")]
     public string Email { get; set; } = string.Empty;
 }

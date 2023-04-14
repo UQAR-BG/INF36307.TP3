@@ -13,8 +13,8 @@ public class EtudiantCache : IEtudiantRepository
     {
         _cache = cache;
         _cacheEntryOptions = new MemoryCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromSeconds(60))
-            .SetAbsoluteExpiration(TimeSpan.FromSeconds(120))
+            .SetSlidingExpiration(TimeSpan.FromSeconds(120))
+            .SetAbsoluteExpiration(TimeSpan.FromSeconds(180))
             .SetPriority(CacheItemPriority.Normal)
             .SetSize(2048);
     }
